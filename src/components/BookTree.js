@@ -2,59 +2,32 @@ import React, { useState, useEffect } from "react";
 
 import { Tree } from "antd";
 import { CarryOutOutlined, FormOutlined } from "@ant-design/icons";
-const gData = [
-  {
-    key: "1",
-    icon: <FormOutlined />,
-    title: "收藏系列1: webpack",
-    children: [
-      {
-        key: "1_1",
-        icon: <CarryOutOutlined />,
-        title: "如何从0搭建webpack5",
-        children: [],
-      },
-    ],
-  },
-  {
-    key: "2",
-    icon: <FormOutlined />,
-    title: "收藏系列2: JS",
-    children: [
-      {
-        key: "2_2",
-        icon: <CarryOutOutlined />,
-        title: "JS GC机制",
-        children: [],
-      },
-    ],
-  },
-];
-
-// const generateData = (_level, _preKey, _tns) => {
-//   const preKey = _preKey || '0';
-//   const tns = _tns || gData;
-
-//   const children = [];
-//   for (let i = 0; i < x; i++) {
-//     const key = `${preKey}-${i}`;
-//     tns.push({ title: key, key });
-//     if (i < y) {
-//       children.push(key);
-//     }
-//   }
-//   if (_level < 0) {
-//     return tns;
-//   }
-//   const level = _level - 1;
-//   children.forEach((key, index) => {
-//     tns[index].children = [];
-//     return generateData(level, key, tns[index].children);
-//   });
-// };
-// generateData(z);
 
 function BookTree(props) {
+  const [gData, setGData] = useState([]);
+  useEffect(() => {
+    chrome.storage.sync.get("bookList", Obj => {
+      let list = Obj.bookList;
+      console.log(list);
+      setGData(list.map((item, index) => {
+        console.log(item);
+        return {
+          key: index,
+          icon: <FormOutlined />,
+          title: <a>{item.group_title}</a>,
+          children: item.children.map((citem, cindex) => {
+              return {
+                key : `${index}_${cindex}`,
+                icon: <CarryOutOutlined />,
+                title: <a href={citem.url}>{citem.title}</a>,
+              }
+            })
+          
+        }
+      }));
+    })
+  }, [])
+
   const onDragEnter = (info) => {
     console.log(info);
     // expandedKeys 需要受控时设置
