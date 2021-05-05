@@ -1,4 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'antd/dist/antd.css';
+import PopUp from './components/PopUp';
 
-ReactDOM.render(<div>popUp</div>, document.getElementById('app'))
+ReactDOM.render(<PopUp />, document.getElementById('app'))
