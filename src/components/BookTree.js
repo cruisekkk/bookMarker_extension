@@ -1,32 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 import { Tree } from "antd";
-import { CarryOutOutlined, FormOutlined } from "@ant-design/icons";
 
-function BookTree(props) {
-  const [gData, setGData] = useState([]);
-  useEffect(() => {
-    chrome.storage.sync.get("bookList", Obj => {
-      let list = Obj.bookList;
-      console.log(list);
-      setGData(list.map((item, index) => {
-        console.log(item);
-        return {
-          key: index,
-          icon: <FormOutlined />,
-          title: <a>{item.group_title}</a>,
-          children: item.children.map((citem, cindex) => {
-              return {
-                key : `${index}_${cindex}`,
-                icon: <CarryOutOutlined />,
-                title: <a href={citem.url}>{citem.title}</a>,
-              }
-            })
-          
-        }
-      }));
-    })
-  }, [])
+function BookTree({gData}) {
+  
+  // useEffect(getBookList, [])
+  
 
   const onDragEnter = (info) => {
     console.log(info);

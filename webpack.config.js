@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -33,6 +34,7 @@ module.exports = {
       ]
   }]
   },
+  devtool: 'source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
