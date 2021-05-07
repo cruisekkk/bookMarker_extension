@@ -6,6 +6,17 @@ function BookTree({gData}) {
   
   // useEffect(getBookList, [])
   
+  // const[a, setA] = useState(null);
+
+  const onSelect = (keys, e) => {
+    let index = keys[0].split('_');
+    chrome.runtime.sendMessage({
+      message: {
+        type: "create_tab",
+        url: gData[index[0]].children[index[1]].url
+      },
+    })
+  }
 
   const onDragEnter = (info) => {
     console.log(info);
@@ -82,6 +93,7 @@ function BookTree({gData}) {
       blockNode
       onDragEnter={onDragEnter}
       onDrop={onDrop}
+      onSelect={onSelect}
       showIcon={true}
       treeData={gData}
     />

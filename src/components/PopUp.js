@@ -1,14 +1,18 @@
 import React, {useState, useEffect} from 'react';
 
-import { Button, Divider, Row, Col, Spin, message } from 'antd';
+import { Button, Divider, Row, Col, Spin, message, } from 'antd';
 import BookTree from "./BookTree";
+import EditTree from "./EditTree";
+import Config from "./Config";
 import MarkAsModal from "./MarkAsModal";
-import { CarryOutOutlined, FormOutlined } from "@ant-design/icons";
+import { CarryOutOutlined, FormOutlined, StarFilled, EditFilled, SettingFilled, StarOutlined, EditOutlined, SettingOutlined } from "@ant-design/icons";
+import styles from "../styles/popUp.module.css";
 
 function PopUp() {
   const [gData, setGData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [tab, setTab] = useState("star");
   useEffect(()=> {
     getBookList();
     function listener(request, sender, sendResponse) {
@@ -30,9 +34,7 @@ function PopUp() {
   const getBookList = () => {
     chrome.storage.sync.get("bookList", Obj => {
       let list = Obj.bookList;
-      console.log(list);
       setGData(list.map((item, index) => {
-        // console.log(item);
         return {
           key: index,
           icon: <FormOutlined />,
@@ -41,7 +43,8 @@ function PopUp() {
               return {
                 key : `${index}_${cindex}`,
                 icon: <CarryOutOutlined />,
-                title: <a href={citem.url} target="_blank">{citem.title}</a>,
+                url: citem.url,
+                title: <a>{citem.title}</a>,
               }
             })
         }
@@ -95,9 +98,28 @@ function PopUp() {
           </MarkAsModal>
         </Col>
       </Row>
-      <Divider plain></Divider>
+      <Divider plain style={{margin:"12px"}}></Divider>
+      <Row justify="center" style={{marginBottom: "12px"}}>
+        <Col span={6} className={styles.tab} onClick={() => setTab("star")}>
+          <div className={styles.wrap}>
+           <StarOutlined style={{fontSize:"30px", position: "relative", left:"37px", top:"2px", transform:"translateX(-50%)"}}/>
+          </div>
+        </Col>
+        <Col span={6} className={styles.tab} onClick={() => setTab("edit")}>
+          <div className={styles.wrap}>
+            <EditOutlined style={{fontSize:"30px", position: "relative",left:"38px", top:"2px",transform:"translateX(-50%)"}}/>
+          </div>
+        </Col>
+        <Col span={6} className={styles.tab} onClick={() => setTab("setting")}>
+          <div className={styles.wrap}>
+            <SettingOutlined style={{fontSize:"30px", position: "relative",left:"37px",top:"2px", transform:"translateX(-50%)"}}/>
+          </div>
+        </Col>
+      </Row>
       <Spin tip="Loading..." spinning={isLoading} delay={500}>
-       <BookTree gData={gData}/> 
+        {tab === "star" && <BookTree gData={gData} />}
+        {tab === "edit" && <EditTree gData={gData} />}
+        {tab === "setting" && <Config gData={gData} />}
       </Spin>
       
     </div>

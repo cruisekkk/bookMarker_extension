@@ -1,6 +1,6 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   entry: {
@@ -8,8 +8,8 @@ module.exports = {
     options: "./src/options.js",
   },
   output: {
-    path: path.join(__dirname, '/dist'),
-    filename: "[name].js"
+    path: path.join(__dirname, "/dist"),
+    filename: "[name].js",
   },
   module: {
     rules: [
@@ -17,34 +17,57 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            plugins: ["@babel/plugin-transform-runtime"]
-          }
-        }
+            plugins: ["@babel/plugin-transform-runtime"],
+          },
+        },
+      },
+      {
+        test: /\.module.css$/,
+        use: [
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true
+            }
+          },
+        ],
+        exclude: [path.join(__dirname, "/node_modules")]
       },
       {
         test: /\.css$/,
-        use: [{
-          loader: 'style-loader'
-        },
-        {
-          loader: 'css-loader'
-        }
-      ]
-  }]
+        use: [
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-loader",
+          },
+        ],
+        include: [path.join(__dirname, "/node_modules")]
+      },
+    ],
   },
-  devtool: 'source-map',
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+    },
+  },
+  devtool: "source-map",
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
       filename: "./popUp.html",
-      chunks: ['popUp'],
+      chunks: ["popUp"],
     }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
       filename: "./options.html",
-      chunks: ['options'],
-    })
-  ]
-}
+      chunks: ["options"],
+    }),
+  ],
+};
