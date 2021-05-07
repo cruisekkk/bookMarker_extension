@@ -4,7 +4,7 @@ import { Button, Divider, Row, Col, Spin, message, Modal, Select } from 'antd';
 
 const { Option } = Select;
 
-function markAsModal({gData, title, visible, setVisible, setIsLoading}) {
+function markAsModal({bookList, title, visible, setVisible, setIsLoading}) {
   const [category, setCategory] = useState(null);
 
   function onChange(value, opt) {
@@ -56,8 +56,8 @@ function markAsModal({gData, title, visible, setVisible, setIsLoading}) {
         }
       >
         {/* <Option value="jack">Jack</Option> */}
-        {gData.map(item => {
-          return <Option value={item.title} key={item.key}>{item.title}</Option>
+        {bookList.map((item,index) => {
+          return <Option value={item.group_title} key={index}>{item.group_title}</Option>
         })}
         
       </Select>

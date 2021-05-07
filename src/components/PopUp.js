@@ -1,56 +1,44 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 
-import { Button, Divider, Row, Col, Spin, message, } from 'antd';
+import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
 import BookTree from "./BookTree";
 import EditTree from "./EditTree";
 import Config from "./Config";
 import MarkAsModal from "./MarkAsModal";
-import { CarryOutOutlined, FormOutlined, StarFilled, EditFilled, SettingFilled, StarOutlined, EditOutlined, SettingOutlined } from "@ant-design/icons";
+import { StarOutlined, EditOutlined, SettingOutlined } from "@ant-design/icons";
 import styles from "../styles/popUp.module.css";
 
 function PopUp() {
-  const [gData, setGData] = useState([]);
+  const [bookList, setBookList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [tab, setTab] = useState("star");
-  useEffect(()=> {
+
+  useEffect(() => {
     getBookList();
     function listener(request, sender, sendResponse) {
       if (request.message.Action === "set") {
-        if (request.message.isChanged === false){
-          console.log("not changed")
+        if (request.message.isChanged === false) {
+          console.log("not changed");
           message.warning("You have bookmarked this site");
         }
         setIsLoading(false);
       }
     }
     chrome.runtime.onMessage.addListener(listener);
-  }, [])
-  useEffect(()=> {
-    if (!isLoading){
-      getBookList()
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      getBookList();
     }
-  }, [isLoading])
+  }, [isLoading]);
+
   const getBookList = () => {
-    chrome.storage.sync.get("bookList", Obj => {
-      let list = Obj.bookList;
-      setGData(list.map((item, index) => {
-        return {
-          key: index,
-          icon: <FormOutlined />,
-          title: item.group_title,
-          children: item.children.map((citem, cindex) => {
-              return {
-                key : `${index}_${cindex}`,
-                icon: <CarryOutOutlined />,
-                url: citem.url,
-                title: <a>{citem.title}</a>,
-              }
-            })
-        }
-      }));
-    })
-  }
+    chrome.storage.sync.get("bookList", (Obj) => {
+      setBookList(Obj.bookList);
+    });
+  };
 
   const quickMark = async () => {
     setIsLoading(true);
@@ -61,69 +49,112 @@ function PopUp() {
     }
     console.log("quick_mark");
     let tab = await getCurrentTab();
-    chrome.runtime.sendMessage({
-      message: {
-        test: "1",
-        type: "quick_mark",
-        title: tab.title,
-        url: tab.url,
-        favIconUrl: tab.favIconUrl
+    console.log("get tab");
+    chrome.runtime.sendMessage(
+      {
+        message: {
+          test: "1",
+          type: "quick_mark",
+          title: tab.title,
+          url: tab.url,
+          favIconURL: tab.favIconUrl,
+        },
       },
-    }, response => {
+      (response) => {
         console.log(response);
-    })
-  }
+      }
+    );
+  };
 
   const showModal = () => {
     setVisible(true);
-  }
+  };
 
   return (
-    <div style={{width: "300px", marginTop: "10px"}}>
-      <Row justify="center" >
+    <div style={{ width: "300px", marginTop: "10px" }}>
+      <Row justify="center">
         <Col span={12}>
-          <Button type="primary" onClick={quickMark} style={{paddingRight: "0px", paddingLeft: "0px", marginBottom: "10px"}}><p style={{width: "150px"}}>Quick Mark</p></Button>
+          <Button
+            type="primary"
+            onClick={quickMark}
+            style={{
+              paddingRight: "0px",
+              paddingLeft: "0px",
+              marginBottom: "10px",
+            }}
+          >
+            <p style={{ width: "150px" }}>Quick Mark</p>
+          </Button>
         </Col>
       </Row>
       <Row justify="center">
         <Col span={12}>
-          <Button type="primary" onClick={() => showModal()} style={{paddingRight: "0px", paddingLeft: "0px"}}><p style={{width: "150px"}}>Mark Tab as</p></Button>
+          <Button
+            type="primary"
+            onClick={() => showModal()}
+            style={{ paddingRight: "0px", paddingLeft: "0px" }}
+          >
+            <p style={{ width: "150px" }}>Mark Tab as</p>
+          </Button>
           <MarkAsModal
             title="Mark this tab as ..."
             visible={visible}
             setVisible={setVisible}
-            gData={gData}
+            bookList={bookList}
             setIsLoading={setIsLoading}
-          >
-          </MarkAsModal>
+          ></MarkAsModal>
         </Col>
       </Row>
-      <Divider plain style={{margin:"12px"}}></Divider>
-      <Row justify="center" style={{marginBottom: "12px"}}>
+      <Divider plain style={{ margin: "12px" }}></Divider>
+      <Row justify="center" style={{ marginBottom: "12px" }}>
         <Col span={6} className={styles.tab} onClick={() => setTab("star")}>
           <div className={styles.wrap}>
-           <StarOutlined style={{fontSize:"30px", position: "relative", left:"37px", top:"2px", transform:"translateX(-50%)"}}/>
+            {" "}
+            <StarOutlined
+              style={{
+                fontSize: "30px",
+                position: "relative",
+                left: "37px",
+                top: "2px",
+                transform: "translateX(-50%)",
+              }}
+            />
           </div>
         </Col>
         <Col span={6} className={styles.tab} onClick={() => setTab("edit")}>
           <div className={styles.wrap}>
-            <EditOutlined style={{fontSize:"30px", position: "relative",left:"38px", top:"2px",transform:"translateX(-50%)"}}/>
+            <EditOutlined
+              style={{
+                fontSize: "30px",
+                position: "relative",
+                left: "38px",
+                top: "2px",
+                transform: "translateX(-50%)",
+              }}
+            />
           </div>
         </Col>
         <Col span={6} className={styles.tab} onClick={() => setTab("setting")}>
           <div className={styles.wrap}>
-            <SettingOutlined style={{fontSize:"30px", position: "relative",left:"37px",top:"2px", transform:"translateX(-50%)"}}/>
+            <SettingOutlined
+              style={{
+                fontSize: "30px",
+                position: "relative",
+                left: "37px",
+                top: "2px",
+                transform: "translateX(-50%)",
+              }}
+            />
           </div>
         </Col>
       </Row>
       <Spin tip="Loading..." spinning={isLoading} delay={500}>
-        {tab === "star" && <BookTree gData={gData} />}
-        {tab === "edit" && <EditTree gData={gData} />}
-        {tab === "setting" && <Config gData={gData} />}
+        {tab === "star" && <BookTree bookList={bookList} />}
+        {tab === "edit" && <EditTree bookList={bookList} isLoading={isLoading} setIsLoading={setIsLoading}/>}
+        {tab === "setting" && <Config />}
       </Spin>
-      
     </div>
-  )
+  );
 }
 
 export default PopUp;
