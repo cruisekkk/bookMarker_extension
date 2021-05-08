@@ -4,6 +4,8 @@ import {
   DeleteTwoTone,
   EditTwoTone,
   CheckCircleTwoTone,
+  HeartOutlined,
+  PlusOutlined
 } from "@ant-design/icons";
 import { Tree, Input } from "antd";
 import {
@@ -16,6 +18,7 @@ import {
   Typography,
   Modal,
 } from "antd";
+import styles from "../styles/editTree.module.css";
 
 const { Paragraph, Text } = Typography;
 
@@ -73,17 +76,20 @@ function editTree({ bookList, isLoading, setIsLoading }) {
         };
       })
     );
-  }, [bookList, groupEdit]);
+  }, [bookList, groupEdit, groupDelete]);
 
   const generateGroup = (index, item) => {
     return (
       <>
-        <FormOutlined
+        {index === 0 ? <HeartOutlined style={{
+            margin: "4px",
+            float: "left",
+          }} /> : <FormOutlined
           style={{
             margin: "4px",
             float: "left",
           }}
-        />
+        />}
         <Paragraph
           ellipsis={true}
           style={{
@@ -122,12 +128,16 @@ function editTree({ bookList, isLoading, setIsLoading }) {
   const generateGroupEdit = (index, item) => {
     return (
       <>
-        <FormOutlined
+        {index === 0 ? <HeartOutlined style={{
+            margin: "4px",
+            float: "left",
+          }} /> : <FormOutlined
           style={{
             margin: "4px",
             float: "left",
           }}
-        />
+        />}
+        
         <Paragraph
           ellipsis={true}
           style={{
@@ -202,6 +212,17 @@ function editTree({ bookList, isLoading, setIsLoading }) {
       },
     });
   };
+
+  const addGroup = () => {
+    setIsLoading(true);
+    console.log("addGroup")
+    chrome.runtime.sendMessage({
+      message: {
+        type: "addGroup",
+        name: "new Group"
+      },
+    });
+  }
 
   const onDragEnter = (info) => {
     console.log(info);
@@ -295,6 +316,9 @@ function editTree({ bookList, isLoading, setIsLoading }) {
         showIcon={true}
         treeData={sData}
       />
+      <div className={styles.wrap}>
+        <PlusOutlined className={styles.add} onClick={addGroup}/>
+      </div>
     </>
   );
 }

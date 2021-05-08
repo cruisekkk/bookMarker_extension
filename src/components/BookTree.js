@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FormOutlined } from "@ant-design/icons";
+import { FormOutlined, HeartOutlined } from "@ant-design/icons";
 import { Tree } from "antd";
 import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
-
 const { Paragraph, Text } = Typography;
 
 function BookTree({ bookList }) {
@@ -14,7 +13,7 @@ function BookTree({ bookList }) {
       bookList.map((item, index) => {
         return {
           key: index,
-          icon: <FormOutlined />,
+          icon: index === 0 ? <HeartOutlined /> : <FormOutlined />,
           title: item.group_title,
           children: item.children.map((citem, cindex) => {
             return {

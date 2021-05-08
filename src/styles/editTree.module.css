@@ -1,0 +1,12 @@
+.add {
+  padding: 2px;
+  font-size: 20px;
+  position: relative;
+  left:150px;
+  transform: translateX(-50%);
+}
+
+.wrap :hover {
+  color: skyblue;
+  background-color: whitesmoke;
+}
