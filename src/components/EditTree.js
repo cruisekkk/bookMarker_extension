@@ -6,14 +6,25 @@ import {
   CheckCircleTwoTone,
 } from "@ant-design/icons";
 import { Tree, Input } from "antd";
-import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
+import {
+  Button,
+  Divider,
+  Row,
+  Col,
+  Spin,
+  message,
+  Typography,
+  Modal,
+} from "antd";
 
 const { Paragraph, Text } = Typography;
 
 function editTree({ bookList, isLoading, setIsLoading }) {
   const [sData, setSData] = useState([]);
   const [groupEdit, setGroupEdit] = useState(-1);
-  const inputRef = useRef('');
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [groupDelete, setGroupDelete] = useState(-1);
+  const inputRef = useRef("");
 
   useEffect(() => {}, []);
 
@@ -84,7 +95,7 @@ function editTree({ bookList, isLoading, setIsLoading }) {
           {item.group_title}
         </Paragraph>
         <DeleteTwoTone
-          onClick={() => deleteGroup(index)}
+          onClick={() => confirmDeleteGroup(index)}
           style={{
             float: "right",
             fontSize: "16px",
@@ -153,7 +164,6 @@ function editTree({ bookList, isLoading, setIsLoading }) {
   };
 
   const deleteItem = (index, cindex) => {
-    console.log("delete it!");
     setIsLoading(true);
     chrome.runtime.sendMessage({
       message: {
@@ -164,7 +174,22 @@ function editTree({ bookList, isLoading, setIsLoading }) {
     });
   };
 
-  const deleteGroup = (index) => {};
+  const confirmDeleteGroup = (index) => {
+    setIsDeleteModalVisible(true);
+    setGroupDelete(index);
+  };
+
+  const deleteGroup = () => {
+    if (groupDelete !== 0) {
+      setIsLoading(true);
+      chrome.runtime.sendMessage({
+        message: {
+          type: "deleteGroup",
+          index: groupDelete,
+        },
+      });
+    }
+  };
 
   const groupRename = (index, item) => {
     setGroupEdit(-1);
@@ -247,15 +272,30 @@ function editTree({ bookList, isLoading, setIsLoading }) {
     }
   };
   return (
-    <Tree
-      className="draggable-tree"
-      draggable
-      blockNode
-      onDragEnter={onDragEnter}
-      onDrop={onDrop}
-      showIcon={true}
-      treeData={sData}
-    />
+    <>
+      <Modal
+        title="Delete group"
+        visible={isDeleteModalVisible}
+        onOk={() => {
+          deleteGroup();
+          setIsDeleteModalVisible(false);
+        }}
+        onCancel={() => {
+          setIsDeleteModalVisible(false);
+        }}
+      >
+        <p>Are you sure you want to delete this group?</p>
+      </Modal>
+      <Tree
+        className="draggable-tree"
+        draggable
+        blockNode
+        onDragEnter={onDragEnter}
+        onDrop={onDrop}
+        showIcon={true}
+        treeData={sData}
+      />
+    </>
   );
 }
 

@@ -19,11 +19,8 @@ function PopUp() {
     function listener(request, sender, sendResponse) {
       if (request.message.Action === "set") {
         if (request.message.isChanged === false) {
-          console.log("not changed");
           message.warning("You have bookmarked this site");
         }
-        console.log("pop up received");
-        console.log(request.message);
         setIsLoading(false);
       }
     }

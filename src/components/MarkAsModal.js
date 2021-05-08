@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 
-import { Button, Divider, Row, Col, Spin, message, Modal, Select } from 'antd';
+import { Button, Divider, Row, Col, Spin, message, Modal, Select } from "antd";
 
 const { Option } = Select;
 
-function markAsModal({bookList, title, visible, setVisible, setIsLoading}) {
+function markAsModal({ bookList, title, visible, setVisible, setIsLoading }) {
   const [category, setCategory] = useState(null);
 
   function onChange(value, opt) {
@@ -29,24 +29,27 @@ function markAsModal({bookList, title, visible, setVisible, setIsLoading}) {
         index: index,
         title: tab.title,
         url: tab.url,
-        favIconUrl: tab.favIconUrl
+        favIconURL: tab.favIconUrl,
       },
-    })
-  }
+    });
+    setCategory(null);
+  };
 
   return (
     <Modal
       title={title}
       visible={visible}
-      onOk={()=> {
+      onOk={() => {
         setVisible(false);
         markAs(category);
       }}
       // confirmLoading={confirmLoading}
-      onCancel={()=> setVisible(false)}
+      onCancel={() => setVisible(false)}
+      destroyOnClose={true}
     >
       <Select
         showSearch
+        allowClear={true}
         style={{ width: 200 }}
         placeholder="Select a category"
         optionFilterProp="children"
@@ -56,13 +59,16 @@ function markAsModal({bookList, title, visible, setVisible, setIsLoading}) {
         }
       >
         {/* <Option value="jack">Jack</Option> */}
-        {bookList.map((item,index) => {
-          return <Option value={item.group_title} key={index}>{item.group_title}</Option>
+        {bookList.map((item, index) => {
+          return (
+            <Option value={item.group_title} key={index}>
+              {item.group_title}
+            </Option>
+          );
         })}
-        
       </Select>
     </Modal>
-  )
+  );
 }
 
 export default markAsModal;
