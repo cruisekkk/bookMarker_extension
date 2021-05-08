@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FormOutlined } from "@ant-design/icons";
 import { Tree } from "antd";
+import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
+
+const { Paragraph, Text } = Typography;
 
 function BookTree({ bookList }) {
   const [gData, setGData] = useState([]);
@@ -16,9 +19,19 @@ function BookTree({ bookList }) {
           children: item.children.map((citem, cindex) => {
             return {
               key: `${index}_${cindex}`,
-              icon: <img height="14px" width="14px" src={citem.favIconURL} />,
+              icon: null,
               url: citem.url,
-              title: <a>{citem.title}</a>,
+              title: (
+                <>
+                  <Paragraph
+                    ellipsis={true}
+                    style={{ marginBottom: "0px", maxWidth: "235px" }}
+                  >
+                    <img height="14px" width="14px" src={citem.favIconURL} />
+                    <a>{citem.title}</a>
+                  </Paragraph>
+                </>
+              ),
             };
           }),
         };

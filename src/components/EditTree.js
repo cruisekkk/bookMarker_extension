@@ -1,25 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { FormOutlined, DeleteTwoTone } from "@ant-design/icons";
-import { Tree } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  FormOutlined,
+  DeleteTwoTone,
+  EditTwoTone,
+  CheckCircleTwoTone,
+} from "@ant-design/icons";
+import { Tree, Input } from "antd";
 import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
 
 const { Paragraph, Text } = Typography;
 
 function editTree({ bookList, isLoading, setIsLoading }) {
   const [sData, setSData] = useState([]);
+  const [groupEdit, setGroupEdit] = useState(-1);
+  const inputRef = useRef('');
 
-  useEffect(() => {
-    // console.log("sData");
-    // console.log(sData);
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     setSData(
       bookList.map((item, index) => {
         return {
           key: index,
-          icon: <FormOutlined />,
-          title: item.group_title,
+          icon: null,
+          title:
+            groupEdit >= 0 && index === groupEdit
+              ? generateGroupEdit(index, item)
+              : generateGroup(index, item),
           children: item.children.map((citem, cindex) => {
             return {
               key: `${index}_${cindex}`,
@@ -29,7 +36,11 @@ function editTree({ bookList, isLoading, setIsLoading }) {
                 <>
                   <Paragraph
                     ellipsis={true}
-                    style={{ marginBottom: "0px", float: "left", maxWidth:"215px" }}
+                    style={{
+                      marginBottom: "0px",
+                      float: "left",
+                      maxWidth: "215px",
+                    }}
                   >
                     <img height="14px" width="14px" src={citem.favIconURL} />
                     <a>{citem.title}</a>
@@ -41,7 +52,7 @@ function editTree({ bookList, isLoading, setIsLoading }) {
                       fontSize: "16px",
                       marginRight: "12px",
                       paddingTop: "4px",
-                      color: "red"
+                      color: "red",
                     }}
                   />
                 </>
@@ -51,22 +62,121 @@ function editTree({ bookList, isLoading, setIsLoading }) {
         };
       })
     );
-  }, [bookList]);
-  // const[a, setA] = useState(null);
+  }, [bookList, groupEdit]);
+
+  const generateGroup = (index, item) => {
+    return (
+      <>
+        <FormOutlined
+          style={{
+            margin: "4px",
+            float: "left",
+          }}
+        />
+        <Paragraph
+          ellipsis={true}
+          style={{
+            marginBottom: "0px",
+            float: "left",
+            maxWidth: "185px",
+          }}
+        >
+          {item.group_title}
+        </Paragraph>
+        <DeleteTwoTone
+          onClick={() => deleteGroup(index)}
+          style={{
+            float: "right",
+            fontSize: "16px",
+            marginRight: "12px",
+            paddingTop: "4px",
+          }}
+        />
+        <EditTwoTone
+          onClick={(e) => {
+            setGroupEdit(index);
+          }}
+          style={{
+            float: "right",
+            fontSize: "16px",
+            marginRight: "6px",
+            paddingTop: "4px",
+            color: "red",
+          }}
+        />
+      </>
+    );
+  };
+
+  const generateGroupEdit = (index, item) => {
+    return (
+      <>
+        <FormOutlined
+          style={{
+            margin: "4px",
+            float: "left",
+          }}
+        />
+        <Paragraph
+          ellipsis={true}
+          style={{
+            marginBottom: "0px",
+            float: "left",
+            maxWidth: "185px",
+          }}
+        >
+          <Input
+            defaultValue={item.group_title}
+            ref={(input) => {
+              if (input) input.focus();
+              return inputRef;
+            }}
+            style={{ padding: "0px" }}
+            onChange={(e) => {
+              let v = e.target.value;
+              inputRef.current = e.target.value;
+            }}
+          />
+        </Paragraph>
+        <CheckCircleTwoTone
+          onClick={() => groupRename(index, item)}
+          style={{
+            float: "right",
+            fontSize: "16px",
+            marginRight: "12px",
+            paddingTop: "4px",
+            color: "red",
+          }}
+        />
+      </>
+    );
+  };
 
   const deleteItem = (index, cindex) => {
     console.log("delete it!");
     setIsLoading(true);
-    chrome.runtime.sendMessage(
-      {
-        message: {
-          type: "deleteItem",
-          index: index,
-          cindex: cindex
-        },
-      }
-    );
-  }
+    chrome.runtime.sendMessage({
+      message: {
+        type: "deleteItem",
+        index: index,
+        cindex: cindex,
+      },
+    });
+  };
+
+  const deleteGroup = (index) => {};
+
+  const groupRename = (index, item) => {
+    setGroupEdit(-1);
+    setIsLoading(true);
+    chrome.runtime.sendMessage({
+      message: {
+        type: "renameGroup",
+        index: index,
+        name: inputRef.current,
+      },
+    });
+  };
 
   const onDragEnter = (info) => {
     console.log(info);

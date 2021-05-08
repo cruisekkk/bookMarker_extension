@@ -22,6 +22,8 @@ function PopUp() {
           console.log("not changed");
           message.warning("You have bookmarked this site");
         }
+        console.log("pop up received");
+        console.log(request.message);
         setIsLoading(false);
       }
     }
@@ -60,9 +62,13 @@ function PopUp() {
           favIconURL: tab.favIconUrl,
         },
       },
-      (response) => {
-        console.log(response);
-      }
+      // (response) => {
+      //   if (chrome.runtime.lastError) {
+      //     console.warn("Warning: " + chrome.runtime.lastError.message);
+      //   } else {
+      //     console.log(response);
+      //   }
+      // }
     );
   };
 
