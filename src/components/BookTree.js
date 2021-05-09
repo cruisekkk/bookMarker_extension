@@ -3,16 +3,21 @@ import { FormOutlined, HeartOutlined } from "@ant-design/icons";
 import { Tree } from "antd";
 import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
 const { Paragraph, Text } = Typography;
+import styles from "../styles/editTree.module.css";
 
-function BookTree({ bookList }) {
+function BookTree({ bookList, setIsLoading }) {
   const [gData, setGData] = useState([]);
+  const [expandedKeys, setExpandedKeys] = useState([]);
+  const [initLoading, setInitLoading] = useState(true);
 
   useEffect(() => {
     console.log(bookList);
+    let keys = [];
     setGData(
       bookList.map((item, index) => {
+        keys.push(`${index}`);
         return {
-          key: index,
+          key: `${index}`,
           icon: index === 0 ? <HeartOutlined /> : <FormOutlined />,
           title: item.group_title,
           children: item.children.map((citem, cindex) => {
@@ -36,7 +41,10 @@ function BookTree({ bookList }) {
         };
       })
     );
+    setExpandedKeys(keys);
   }, [bookList]);
+
+  useEffect(() => setInitLoading(false), [expandedKeys]);
 
   const onSelect = (keys, e) => {
     let index = keys[0].split("_");
@@ -49,13 +57,23 @@ function BookTree({ bookList }) {
   };
 
   return (
-    <Tree
-      className="draggable-tree"
-      blockNode
-      onSelect={onSelect}
-      showIcon={true}
-      treeData={gData}
-    />
+    <>
+      {!expandedKeys.length ? (
+        <div className={styles.spinWrapper}>
+          <Spin />
+        </div>
+      ) : (
+        <Tree
+          className="draggable-tree"
+          blockNode
+          // autoExpandParent={expand}
+          defaultExpandedKeys={expandedKeys}
+          onSelect={onSelect}
+          showIcon={true}
+          treeData={gData}
+        />
+      )}
+    </>
   );
 }
 

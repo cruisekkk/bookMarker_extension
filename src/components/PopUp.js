@@ -151,8 +151,8 @@ function PopUp() {
           </div>
         </Col>
       </Row>
-      <Spin tip="Loading..." spinning={isLoading} delay={500}>
-        {tab === "star" && <BookTree bookList={bookList} />}
+      <Spin tip="Loading..." spinning={isLoading} delay={200}>
+        {tab === "star" && <BookTree bookList={bookList} setIsLoading={setIsLoading}/>}
         {tab === "edit" && <EditTree bookList={bookList} isLoading={isLoading} setIsLoading={setIsLoading}/>}
         {tab === "setting" && <Config />}
       </Spin>

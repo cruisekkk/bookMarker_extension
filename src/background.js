@@ -118,7 +118,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           group_title: request.message.name,
           children: [],
         });
-        console.log(list);
+        chrome.storage.sync.set({ bookList: list }, () => {
+          chrome.runtime.sendMessage({
+            message: { Action: "set", isChanged: true },
+          });
+        });
+      });
+      break;
+    case "dragAndDrop":
+      chrome.storage.sync.get("bookList", (Obj) => {
+        let list = Obj.bookList;
+        let dragKeyArr = request.message.dragKey.split('_');
+        let dropKeyArr = request.message.dropKey.includes('_') ? request.message.dropKey.split('_') : [request.message.dropKey, '-1']
+        let newChild = list[dragKeyArr[0]].children.splice(dragKeyArr[1], 1)[0];
+        list[dropKeyArr[0]].children.splice(parseInt(dropKeyArr[1])+1, 0, newChild);
         chrome.storage.sync.set({ bookList: list }, () => {
           chrome.runtime.sendMessage({
             message: { Action: "set", isChanged: true },

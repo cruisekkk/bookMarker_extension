@@ -5,7 +5,7 @@ import {
   EditTwoTone,
   CheckCircleTwoTone,
   HeartOutlined,
-  PlusOutlined
+  PlusOutlined,
 } from "@ant-design/icons";
 import { Tree, Input } from "antd";
 import {
@@ -22,20 +22,24 @@ import styles from "../styles/editTree.module.css";
 
 const { Paragraph, Text } = Typography;
 
-function editTree({ bookList, isLoading, setIsLoading }) {
+function editTree({ bookList, setIsLoading }) {
   const [sData, setSData] = useState([]);
+  const [expandedKeys, setExpandedKeys] = useState([]);
   const [groupEdit, setGroupEdit] = useState(-1);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [groupDelete, setGroupDelete] = useState(-1);
   const inputRef = useRef("");
-
-  useEffect(() => {}, []);
-
+  let keys;
   useEffect(() => {
+    setExpandedKeys(keys);
+  }, [sData]);
+  useEffect(() => {
+    keys = [];
     setSData(
       bookList.map((item, index) => {
+        keys.push(`${index}`);
         return {
-          key: index,
+          key: `${index}`,
           icon: null,
           title:
             groupEdit >= 0 && index === groupEdit
@@ -76,20 +80,28 @@ function editTree({ bookList, isLoading, setIsLoading }) {
         };
       })
     );
+    console.log(keys);
+    setExpandedKeys(keys);
   }, [bookList, groupEdit, groupDelete]);
 
   const generateGroup = (index, item) => {
     return (
       <>
-        {index === 0 ? <HeartOutlined style={{
-            margin: "4px",
-            float: "left",
-          }} /> : <FormOutlined
-          style={{
-            margin: "4px",
-            float: "left",
-          }}
-        />}
+        {index === 0 ? (
+          <HeartOutlined
+            style={{
+              margin: "4px",
+              float: "left",
+            }}
+          />
+        ) : (
+          <FormOutlined
+            style={{
+              margin: "4px",
+              float: "left",
+            }}
+          />
+        )}
         <Paragraph
           ellipsis={true}
           style={{
@@ -128,16 +140,22 @@ function editTree({ bookList, isLoading, setIsLoading }) {
   const generateGroupEdit = (index, item) => {
     return (
       <>
-        {index === 0 ? <HeartOutlined style={{
-            margin: "4px",
-            float: "left",
-          }} /> : <FormOutlined
-          style={{
-            margin: "4px",
-            float: "left",
-          }}
-        />}
-        
+        {index === 0 ? (
+          <HeartOutlined
+            style={{
+              margin: "4px",
+              float: "left",
+            }}
+          />
+        ) : (
+          <FormOutlined
+            style={{
+              margin: "4px",
+              float: "left",
+            }}
+          />
+        )}
+
         <Paragraph
           ellipsis={true}
           style={{
@@ -215,83 +233,33 @@ function editTree({ bookList, isLoading, setIsLoading }) {
 
   const addGroup = () => {
     setIsLoading(true);
-    console.log("addGroup")
+    console.log("addGroup");
     chrome.runtime.sendMessage({
       message: {
         type: "addGroup",
-        name: "new Group"
+        name: "new Group",
       },
     });
-  }
+  };
 
-  const onDragEnter = (info) => {
+  const onDragStart = (info) => {
     console.log(info);
-    // expandedKeys 需要受控时设置
-    // this.setState({
-    //   expandedKeys: info.expandedKeys,
-    // });
   };
 
   const onDrop = (info) => {
     console.log(info);
+    setIsLoading(true);
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
-    const dropPos = info.node.pos.split("-");
-    const dropPosition =
-      info.dropPosition - Number(dropPos[dropPos.length - 1]);
-
-    const loop = (data, key, callback) => {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].key === key) {
-          return callback(data[i], i, data);
-        }
-        if (data[i].children) {
-          loop(data[i].children, key, callback);
-        }
-      }
-    };
-    const data = [...sData];
-
-    // Find dragObject
-    let dragObj;
-    loop(data, dragKey, (item, index, arr) => {
-      arr.splice(index, 1);
-      dragObj = item;
+    chrome.runtime.sendMessage({
+      message: {
+        type: "dragAndDrop",
+        dropKey,
+        dragKey,
+      },
     });
-
-    if (!info.dropToGap) {
-      // Drop on the content
-      loop(data, dropKey, (item) => {
-        item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
-      });
-    } else if (
-      (info.node.props.children || []).length > 0 && // Has children
-      info.node.props.expanded && // Is expanded
-      dropPosition === 1 // On the bottom gap
-    ) {
-      loop(data, dropKey, (item) => {
-        item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
-        // in previous version, we use item.children.push(dragObj) to insert the
-        // item to the tail of the children
-      });
-    } else {
-      let ar;
-      let i;
-      loop(data, dropKey, (item, index, arr) => {
-        ar = arr;
-        i = index;
-      });
-      if (dropPosition === -1) {
-        ar.splice(i, 0, dragObj);
-      } else {
-        ar.splice(i + 1, 0, dragObj);
-      }
-    }
   };
+  
   return (
     <>
       <Modal
@@ -309,15 +277,21 @@ function editTree({ bookList, isLoading, setIsLoading }) {
       </Modal>
       <Tree
         className="draggable-tree"
+        allowDrop={(obj) => {
+          let key_arr = obj.dropNode.key.split("_");
+          if (key_arr && ((key_arr.length === 1 && obj.dropPosition === 0) || (key_arr.length === 2 && obj.dropPosition === 1))) {
+            return true;
+          }
+          return false;
+        }}
         draggable
         blockNode
-        onDragEnter={onDragEnter}
         onDrop={onDrop}
         showIcon={true}
         treeData={sData}
       />
       <div className={styles.wrap}>
-        <PlusOutlined className={styles.add} onClick={addGroup}/>
+        <PlusOutlined className={styles.add} onClick={addGroup} />
       </div>
     </>
   );
