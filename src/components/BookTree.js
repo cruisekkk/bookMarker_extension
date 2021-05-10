@@ -64,7 +64,7 @@ function BookTree({ bookList, setIsLoading }) {
         </div>
       ) : (
         <Tree
-          className="draggable-tree"
+          className={styles.tree}
           blockNode
           // autoExpandParent={expand}
           defaultExpandedKeys={expandedKeys}

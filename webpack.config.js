@@ -25,7 +25,7 @@ module.exports = {
         },
       },
       {
-        test: /\.module.css$/,
+        test: /\.module\.css$/,
         use: [
           {
             loader: "style-loader",
@@ -50,6 +50,14 @@ module.exports = {
           },
         ],
         include: [path.join(__dirname, "/node_modules")]
+      },
+      {
+        test: /\.(png|jpe?g|gif|ttf|svg|woff|eot)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
       },
     ],
   },

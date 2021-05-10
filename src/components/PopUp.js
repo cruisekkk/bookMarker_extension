@@ -5,7 +5,19 @@ import BookTree from "./BookTree";
 import EditTree from "./EditTree";
 import Config from "./Config";
 import MarkAsModal from "./MarkAsModal";
-import { StarOutlined, EditOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  StarOutlined,
+  EditOutlined,
+  SettingOutlined,
+  StarFilled,
+  HeartFilled,
+  FolderFilled,
+  FolderAddFilled,
+  HeartOutlined,
+  FolderOutlined,
+  HeartTwoTone,
+  FolderTwoTone,
+} from "@ant-design/icons";
 import styles from "../styles/popUp.module.css";
 
 function PopUp() {
@@ -58,7 +70,7 @@ function PopUp() {
           url: tab.url,
           favIconURL: tab.favIconUrl,
         },
-      },
+      }
       // (response) => {
       //   if (chrome.runtime.lastError) {
       //     console.warn("Warning: " + chrome.runtime.lastError.message);
@@ -74,28 +86,32 @@ function PopUp() {
   };
 
   return (
-    <div style={{ width: "300px", marginTop: "10px" }}>
-      <Row justify="center">
-        <Col span={12}>
-          <Button
-            type="primary"
+    <div className={styles.frame}>
+      <Row justify="center" className={styles.header}>
+        <Col span={21}>
+          <div className={styles.marker}><p>Just Marker</p></div>
+          <FolderAddFilled onClick={() => showModal()} className={styles.button} />
+          <HeartFilled
             onClick={quickMark}
-            style={{
-              paddingRight: "0px",
-              paddingLeft: "0px",
-              marginBottom: "10px",
-            }}
-          >
-            <p style={{ width: "150px" }}>Quick Mark</p>
-          </Button>
+            className={styles.button}
+          />
+          <MarkAsModal
+            title="Mark this tab as ..."
+            visible={visible}
+            setVisible={setVisible}
+            bookList={bookList}
+            setIsLoading={setIsLoading}
+          ></MarkAsModal>
+          {/* <p style={{ width: "150px" }}>Quick Mark</p> */}
+          {/* </Button> */}
         </Col>
       </Row>
-      <Row justify="center">
+      {/* <Row justify="center">
         <Col span={12}>
           <Button
-            type="primary"
+            type="text"
             onClick={() => showModal()}
-            style={{ paddingRight: "0px", paddingLeft: "0px" }}
+            className={styles.button}
           >
             <p style={{ width: "150px" }}>Mark Tab as</p>
           </Button>
@@ -107,53 +123,37 @@ function PopUp() {
             setIsLoading={setIsLoading}
           ></MarkAsModal>
         </Col>
-      </Row>
-      <Divider plain style={{ margin: "12px" }}></Divider>
-      <Row justify="center" style={{ marginBottom: "12px" }}>
-        <Col span={6} className={styles.tab} onClick={() => setTab("star")}>
-          <div className={styles.wrap}>
-            {" "}
-            <StarOutlined
-              style={{
-                fontSize: "30px",
-                position: "relative",
-                left: "37px",
-                top: "2px",
-                transform: "translateX(-50%)",
-              }}
+      </Row> */}
+      {/* <Row justify="center" className={styles.sideBar}> */}
+      <div className={styles.sideBar}>
+        <div className={styles.viewTabWrapper} onClick={() => setTab("star")} >
+            <StarFilled
+              className={styles.viewTabIcon}
             />
-          </div>
-        </Col>
-        <Col span={6} className={styles.tab} onClick={() => setTab("edit")}>
-          <div className={styles.wrap}>
+            </div>
+        <div className={styles.unViewTabWrapper} onClick={() => setTab("edit")}>
             <EditOutlined
-              style={{
-                fontSize: "30px",
-                position: "relative",
-                left: "38px",
-                top: "2px",
-                transform: "translateX(-50%)",
-              }}
+              className={styles.unViewTabIcon}
             />
-          </div>
-        </Col>
-        <Col span={6} className={styles.tab} onClick={() => setTab("setting")}>
-          <div className={styles.wrap}>
+            </div>
+        <div className={styles.unViewTabWrapper} onClick={() => setTab("setting")}>
             <SettingOutlined
-              style={{
-                fontSize: "30px",
-                position: "relative",
-                left: "37px",
-                top: "2px",
-                transform: "translateX(-50%)",
-              }}
+              className={styles.unViewTabIcon}
             />
-          </div>
-        </Col>
-      </Row>
+            </div>
+      </div>
+      {/* </Row> */}
       <Spin tip="Loading..." spinning={isLoading} delay={200}>
-        {tab === "star" && <BookTree bookList={bookList} setIsLoading={setIsLoading}/>}
-        {tab === "edit" && <EditTree bookList={bookList} isLoading={isLoading} setIsLoading={setIsLoading}/>}
+        {tab === "star" && (
+          <BookTree bookList={bookList} setIsLoading={setIsLoading} />
+        )}
+        {tab === "edit" && (
+          <EditTree
+            bookList={bookList}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+        )}
         {tab === "setting" && <Config />}
       </Spin>
     </div>

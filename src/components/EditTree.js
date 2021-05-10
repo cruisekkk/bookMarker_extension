@@ -259,7 +259,7 @@ function editTree({ bookList, setIsLoading }) {
       },
     });
   };
-  
+
   return (
     <>
       <Modal
@@ -276,7 +276,7 @@ function editTree({ bookList, setIsLoading }) {
         <p>Are you sure you want to delete this group?</p>
       </Modal>
       <Tree
-        className="draggable-tree"
+        className={"draggable-tree " + styles.tree}
         allowDrop={(obj) => {
           let key_arr = obj.dropNode.key.split("_");
           if (key_arr && ((key_arr.length === 1 && obj.dropPosition === 0) || (key_arr.length === 2 && obj.dropPosition === 1))) {

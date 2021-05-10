@@ -10,16 +10,16 @@
   "action": {
     "default_popup": "popUp.html",
     "default_icon": {
-      "16": "/images/johnny.png",
-      "32": "/images/johnny.png",
-      "48": "/images/johnny.png",
-      "128": "/images/johnny.png"
+      "16": "/src/images/johnny.png",
+      "32": "/src/images/johnny.png",
+      "48": "/src/images/johnny.png",
+      "128": "/src/images/johnny.png"
     }
   },
   "icons": {
-    "16": "/images/johnny.png",
-    "32": "/images/johnny.png",
-    "48": "/images/johnny.png",
-    "128": "/images/johnny.png"
+    "16": "/src/images/johnny.png",
+    "32": "/src/images/johnny.png",
+    "48": "/src/images/johnny.png",
+    "128": "/src/images/johnny.png"
   }
 }
