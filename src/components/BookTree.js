@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { FormOutlined, HeartOutlined } from "@ant-design/icons";
+import { FolderFilled, HeartFilled } from "@ant-design/icons";
 import { Tree } from "antd";
-import { Button, Divider, Row, Col, Spin, message, Typography } from "antd";
-const { Paragraph, Text } = Typography;
-import styles from "../styles/editTree.module.css";
+import { Spin, Typography, Tooltip } from "antd";
+const { Paragraph } = Typography;
+import styles from "../styles/editTree.module.scss";
 
-function BookTree({ bookList, setIsLoading }) {
+function BookTree({ bookList, setIsLoading, theme }) {
   const [gData, setGData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
-  const [initLoading, setInitLoading] = useState(true);
-
   useEffect(() => {
-    console.log(bookList);
     let keys = [];
     setGData(
       bookList.map((item, index) => {
         keys.push(`${index}`);
         return {
           key: `${index}`,
-          icon: index === 0 ? <HeartOutlined /> : <FormOutlined />,
-          title: item.group_title,
+          icon:
+            index === 0 ? (
+              <HeartFilled className={styles[theme]} />
+            ) : (
+              <FolderFilled className={styles[theme]} />
+            ),
+          title: (
+            <Paragraph
+              className={styles.folderFont}
+              style={{ marginBottom: "0px" }}
+              strong={true}
+            >
+              {item.group_title}
+            </Paragraph>
+          ),
           children: item.children.map((citem, cindex) => {
             return {
               key: `${index}_${cindex}`,
@@ -27,13 +37,26 @@ function BookTree({ bookList, setIsLoading }) {
               url: citem.url,
               title: (
                 <>
-                  <Paragraph
-                    ellipsis={true}
-                    style={{ marginBottom: "0px", maxWidth: "235px" }}
+                  <Tooltip
+                    placement="topLeft"
+                    title={citem.title}
+                    color="#4f555d"
+                    mouseEnterDelay={0.8}
                   >
-                    <img height="14px" width="14px" src={citem.favIconURL} />
-                    <a>{citem.title}</a>
-                  </Paragraph>
+                    <Paragraph
+                      ellipsis={true}
+                      className={styles.contentFont}
+                      style={{ marginBottom: "0px" }}
+                    >
+                      <img
+                        height="14px"
+                        width="14px"
+                        style={{ margin: "3px" }}
+                        src={citem.favIconURL}
+                      />
+                      {citem.title}
+                    </Paragraph>
+                  </Tooltip>
                 </>
               ),
             };
@@ -43,8 +66,6 @@ function BookTree({ bookList, setIsLoading }) {
     );
     setExpandedKeys(keys);
   }, [bookList]);
-
-  useEffect(() => setInitLoading(false), [expandedKeys]);
 
   const onSelect = (keys, e) => {
     let index = keys[0].split("_");
@@ -66,7 +87,6 @@ function BookTree({ bookList, setIsLoading }) {
         <Tree
           className={styles.tree}
           blockNode
-          // autoExpandParent={expand}
           defaultExpandedKeys={expandedKeys}
           onSelect={onSelect}
           showIcon={true}

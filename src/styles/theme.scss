@@ -1,0 +1,41 @@
+$pink-theme: rgb(255, 130, 130) !default;
+$blue-theme: #3974f5 !default;
+$gray-theme: rgb(124, 120, 124) !default;
+$green-theme: rgb(79, 156, 103) !default;
+
+@font-face {
+  font-family: Marker;
+  src: url(../fonts/PermanentMarker-Regular.ttf);
+}
+
+.pink {
+  color: $pink-theme;
+}
+
+.bg_pink {
+  background-color: $pink-theme;
+}
+
+.blue {
+  color: $blue-theme;
+}
+
+.bg_blue {
+  background-color: $blue-theme;
+}
+
+.gray {
+  color: $gray-theme;
+}
+
+.bg_gray {
+  background-color: $gray-theme;
+}
+
+.green {
+  color: $green-theme;
+}
+
+.bg_green {
+  background-color: $green-theme;
+}

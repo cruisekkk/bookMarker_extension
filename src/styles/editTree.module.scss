@@ -1,0 +1,85 @@
+@import "./theme.scss";
+
+.pink {
+  color: $pink-theme !important;
+}
+.bg_pink {
+  background-color: $pink-theme !important;
+}
+.blue {
+  color: $blue-theme !important;
+}
+.bg_blue {
+  background-color: $blue-theme !important;
+}
+.gray {
+  color: $gray-theme !important;
+}
+.bg_gray {
+  background-color: $gray-theme !important;
+}
+.green {
+  color: $green-theme !important;
+}
+.bgGreen {
+  background-color: $green-theme !important;
+}
+
+.folderFont {
+  color: #4f555d;
+  margin: 0px;
+  display: inline-block;
+}
+
+.contentFont {
+  max-width: 260px;
+  color: #4f555d;
+  margin-bottom: 0px;
+}
+
+.editContentFont {
+  @extend .contentFont;
+  max-width: 250px;
+  float: left;
+}
+
+.editFolderFont {
+  @extend .folderFont;
+}
+
+.editIcon {
+  float: right;
+  font-size: 14px;
+  margin-right: 12px;
+  padding-top: 4px;
+}
+
+.add {
+  padding: 2px;
+  font-size: 20px;
+  position: relative;
+  left: 150px;
+  transform: translateX(-50%);
+}
+
+.spinWrapper {
+  margin: 20px 0;
+  margin-bottom: 20px;
+  padding: 30px 50px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.wrap_pink :hover {
+  color: $pink-theme;
+  background-color: whitesmoke;
+}
+
+.wrap_blue :hover {
+  color: $blue-theme;
+  background-color: whitesmoke;
+}
+
+.tree {
+  background-color: #fdfdfd;
+}

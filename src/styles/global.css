@@ -1,0 +1,27 @@
+.ant-tree {
+  color: rgba(0,0,0,0.3);
+}
+
+.ant-tree .ant-tree-treenode {
+  padding: 0 0 0 0;
+}
+
+.ant-tree .ant-tree-node-content-wrapper {
+  padding: 0 2px;
+}
+
+.ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle {
+  width: 20px;
+}
+
+.ant-tree-switcher {
+  width: 20px;
+}
+
+.ant-tree-indent-unit {
+  width: 0px;
+}
+
+body {
+  overflow: scroll;
+}

@@ -1,0 +1,98 @@
+@import "./theme.scss";
+
+.pink {
+  color: $pink-theme !important;
+}
+.bg_pink {
+  background-color: $pink-theme !important;
+}
+.blue {
+  color: $blue-theme !important;
+}
+.bg_blue {
+  background-color: $blue-theme !important;
+}
+.gray {
+  color: $gray-theme !important;
+}
+.bg_gray {
+  background-color: $gray-theme !important;
+}
+.green {
+  color: $green-theme !important;
+}
+.bgGreen {
+  background-color: $green-theme !important;
+}
+
+.frame {
+  width: 300px;
+  max-height: 700px;
+  height: 400px;
+  background-color: #fdfdfd;
+}
+
+.header {
+  padding-top: 2px;
+  margin: 0px;
+  padding-bottom: 6px;
+  .marker {
+    float: left;
+    margin-top: 10px;
+    margin-left: 8px;
+    p {
+      margin: auto;
+      font-family: Marker;
+      color: whitesmoke;
+      font-size: 15px;
+    }
+  }
+  .button {
+    float: right;
+    padding-right: 0px;
+    padding-left: 0px;
+    font-size: 24px;
+    margin: 8px;
+    color: #ffffff;
+  }
+  &:after {
+    content: "";
+    position: relative;
+    width: 250px;
+    margin: auto;
+    bottom: 2px;
+    border-bottom: solid white 1px;
+  }
+}
+
+.sideBar {
+  display: flex;
+  justify-content: center;
+  background-color: #fdfdfd;
+  color: rgba(0, 0, 0, 0.54);
+  padding-bottom: 6px;
+  cursor: pointer;
+  :hover {
+    background-color: whitesmoke;
+  }
+  .unViewTabIcon {
+    font-size: 34px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+  .viewTabIcon {
+    @extend .unViewTabIcon;
+  }
+  .unViewTabWrapper {
+    width: 30%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-align: center;
+  }
+  .viewTabWrapper {
+    @extend .unViewTabWrapper;
+    background-color: #eaeaea;
+    :hover {
+      background-color: #eaeaea;
+    }
+  }
+}

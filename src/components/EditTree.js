@@ -1,38 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  FormOutlined,
   DeleteTwoTone,
   EditTwoTone,
   CheckCircleTwoTone,
-  HeartOutlined,
+  HeartFilled,
+  FolderFilled,
   PlusOutlined,
 } from "@ant-design/icons";
 import { Tree, Input } from "antd";
-import {
-  Button,
-  Divider,
-  Row,
-  Col,
-  Spin,
-  message,
-  Typography,
-  Modal,
-} from "antd";
-import styles from "../styles/editTree.module.css";
+import { Typography, Modal } from "antd";
+import styles from "../styles/editTree.module.scss";
 
-const { Paragraph, Text } = Typography;
+const { Paragraph } = Typography;
 
-function editTree({ bookList, setIsLoading }) {
+function editTree({ bookList, setIsLoading, theme }) {
   const [sData, setSData] = useState([]);
-  const [expandedKeys, setExpandedKeys] = useState([]);
+  // const [expandedKeys, setExpandedKeys] = useState([]);
   const [groupEdit, setGroupEdit] = useState(-1);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [groupDelete, setGroupDelete] = useState(-1);
   const inputRef = useRef("");
+
   let keys;
-  useEffect(() => {
-    setExpandedKeys(keys);
-  }, [sData]);
+
+  // useEffect(() => {
+  //   setExpandedKeys(keys);
+  // }, [sData]);
+
   useEffect(() => {
     keys = [];
     setSData(
@@ -40,7 +34,12 @@ function editTree({ bookList, setIsLoading }) {
         keys.push(`${index}`);
         return {
           key: `${index}`,
-          icon: null,
+          icon:
+            index === 0 ? (
+              <HeartFilled className={styles[theme]} />
+            ) : (
+              <FolderFilled className={styles[theme]} />
+            ),
           title:
             groupEdit >= 0 && index === groupEdit
               ? generateGroupEdit(index, item)
@@ -54,24 +53,21 @@ function editTree({ bookList, setIsLoading }) {
                 <>
                   <Paragraph
                     ellipsis={true}
-                    style={{
-                      marginBottom: "0px",
-                      float: "left",
-                      maxWidth: "215px",
-                    }}
+                    style={{ marginBottom: "0px" }}
+                    className={styles.editContentFont}
                   >
-                    <img height="14px" width="14px" src={citem.favIconURL} />
-                    <a>{citem.title}</a>
+                    <img
+                      height="14px"
+                      width="14px"
+                      style={{ margin: "3px" }}
+                      src={citem.favIconURL}
+                    />
+                    {citem.title}
                   </Paragraph>
                   <DeleteTwoTone
                     onClick={() => deleteItem(index, cindex)}
-                    style={{
-                      float: "right",
-                      fontSize: "16px",
-                      marginRight: "12px",
-                      paddingTop: "4px",
-                      color: "red",
-                    }}
+                    className={styles.editIcon}
+                    twoToneColor="red"
                   />
                 </>
               ),
@@ -80,58 +76,31 @@ function editTree({ bookList, setIsLoading }) {
         };
       })
     );
-    console.log(keys);
-    setExpandedKeys(keys);
+    // setExpandedKeys(keys);
   }, [bookList, groupEdit, groupDelete]);
 
   const generateGroup = (index, item) => {
     return (
       <>
-        {index === 0 ? (
-          <HeartOutlined
-            style={{
-              margin: "4px",
-              float: "left",
-            }}
-          />
-        ) : (
-          <FormOutlined
-            style={{
-              margin: "4px",
-              float: "left",
-            }}
-          />
-        )}
         <Paragraph
-          ellipsis={true}
-          style={{
-            marginBottom: "0px",
-            float: "left",
-            maxWidth: "185px",
-          }}
+          className={styles.editFolderFont}
+          style={{ marginBottom: "0px" }}
+          strong={true}
         >
           {item.group_title}
         </Paragraph>
         <DeleteTwoTone
           onClick={() => confirmDeleteGroup(index)}
-          style={{
-            float: "right",
-            fontSize: "16px",
-            marginRight: "12px",
-            paddingTop: "4px",
-          }}
+          className={styles.editIcon}
+          twoToneColor="red"
         />
         <EditTwoTone
           onClick={(e) => {
             setGroupEdit(index);
+            inputRef.current = item.group_title;
           }}
-          style={{
-            float: "right",
-            fontSize: "16px",
-            marginRight: "6px",
-            paddingTop: "4px",
-            color: "red",
-          }}
+          className={styles.editIcon}
+          style={{ marginRight: "6px" }}
         />
       </>
     );
@@ -140,29 +109,9 @@ function editTree({ bookList, setIsLoading }) {
   const generateGroupEdit = (index, item) => {
     return (
       <>
-        {index === 0 ? (
-          <HeartOutlined
-            style={{
-              margin: "4px",
-              float: "left",
-            }}
-          />
-        ) : (
-          <FormOutlined
-            style={{
-              margin: "4px",
-              float: "left",
-            }}
-          />
-        )}
-
         <Paragraph
-          ellipsis={true}
-          style={{
-            marginBottom: "0px",
-            float: "left",
-            maxWidth: "185px",
-          }}
+          className={styles.editFolderFont}
+          style={{ marginBottom: "0px" }}
         >
           <Input
             defaultValue={item.group_title}
@@ -179,13 +128,7 @@ function editTree({ bookList, setIsLoading }) {
         </Paragraph>
         <CheckCircleTwoTone
           onClick={() => groupRename(index, item)}
-          style={{
-            float: "right",
-            fontSize: "16px",
-            marginRight: "12px",
-            paddingTop: "4px",
-            color: "red",
-          }}
+          className={styles.editIcon}
         />
       </>
     );
@@ -233,7 +176,6 @@ function editTree({ bookList, setIsLoading }) {
 
   const addGroup = () => {
     setIsLoading(true);
-    console.log("addGroup");
     chrome.runtime.sendMessage({
       message: {
         type: "addGroup",
@@ -242,12 +184,7 @@ function editTree({ bookList, setIsLoading }) {
     });
   };
 
-  const onDragStart = (info) => {
-    console.log(info);
-  };
-
   const onDrop = (info) => {
-    console.log(info);
     setIsLoading(true);
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
@@ -279,7 +216,11 @@ function editTree({ bookList, setIsLoading }) {
         className={"draggable-tree " + styles.tree}
         allowDrop={(obj) => {
           let key_arr = obj.dropNode.key.split("_");
-          if (key_arr && ((key_arr.length === 1 && obj.dropPosition === 0) || (key_arr.length === 2 && obj.dropPosition === 1))) {
+          if (
+            key_arr &&
+            ((key_arr.length === 1 && obj.dropPosition === 0) ||
+              (key_arr.length === 2 && obj.dropPosition === 1))
+          ) {
             return true;
           }
           return false;
@@ -290,7 +231,7 @@ function editTree({ bookList, setIsLoading }) {
         showIcon={true}
         treeData={sData}
       />
-      <div className={styles.wrap}>
+      <div className={styles.wrap + "_" + theme}>
         <PlusOutlined className={styles.add} onClick={addGroup} />
       </div>
     </>

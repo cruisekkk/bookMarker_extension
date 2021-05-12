@@ -1,0 +1,50 @@
+@import "./theme.scss";
+
+.pink {
+  color: $pink-theme !important;
+}
+.bg_pink {
+  background-color: $pink-theme !important;
+}
+.blue {
+  color: $blue-theme !important;
+}
+.bg_blue {
+  background-color: $blue-theme !important;
+}
+.gray {
+  color: $gray-theme !important;
+}
+.bg_gray {
+  background-color: $gray-theme !important;
+}
+.green {
+  color: $green-theme !important;
+}
+.bgGreen {
+  background-color: $green-theme !important;
+}
+
+.text {
+  font-family: Marker;
+  text-align: center;
+  font-size: 20px;
+  margin: 5px;
+}
+
+.shape {
+  // float: left;
+  border-radius: 50%;
+  border-width: 25px;
+  border-style: solid;
+  margin: 5px;
+}
+
+.container {
+  // position: relative;
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 260px;
+  display: flex;
+  justify-content: space-between;
+}
